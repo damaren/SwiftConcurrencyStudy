@@ -94,7 +94,7 @@ private func blockingFuncThree() {
 
 struct SyncAndAsyncView: View {
     var body: some View {
-        VStack {
+        List {
             Button("Sync function example") {
                 Task.detached {
                     syncFunctionExample()

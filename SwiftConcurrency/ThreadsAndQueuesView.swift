@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ThreadsAndQueuesView: View {
     var body: some View {
-        VStack {
+        List {
             Button("Create a thread") {
                 Task {
                     await createThreadDirectly()

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AsyncStreamView: View {
     var body: some View {
-        VStack {
+        List {
             Button("Async stream example") {
                 Task {
                     await asyncStreamExample()

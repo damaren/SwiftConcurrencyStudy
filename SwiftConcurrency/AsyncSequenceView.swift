@@ -51,7 +51,7 @@ struct AsyncSequenceView: View {
     private let intGenerator = RandomIntGenerator()
     
     var body: some View {
-        VStack {
+        List {
             Button("Generate another integer with an infinite async sequence") {
                 Task {
                     originalValue = await intGenerator.next() ?? 0
@@ -100,14 +100,6 @@ struct AsyncSequenceView: View {
                 }
             }
             
-            if !resultingIntegers.isEmpty {
-                List {
-                    ForEach(Array(resultingIntegers.enumerated()), id: \.offset) { _, integer in
-                        Text("\(integer)")
-                    }
-                }
-            }
-            
             Button("Map integers to 3n+1 or n/2") {
                 Task {
                     let mappedIntGenerator = intGenerator.map { value in
@@ -137,6 +129,12 @@ struct AsyncSequenceView: View {
             
             Text("Original value: \(originalValue)")
             Text("Result: \(result)")
+            
+            if !resultingIntegers.isEmpty {
+                ForEach(Array(resultingIntegers.enumerated()), id: \.offset) { _, integer in
+                    Text("\(integer)")
+                }
+            }
         }
         .navigationTitle("Async Sequences")
     }

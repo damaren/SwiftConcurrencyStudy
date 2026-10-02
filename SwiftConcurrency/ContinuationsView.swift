@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ContinuationsView: View {
     var body: some View {
-        VStack {
+        List {
             Button("Func with completion example") {
                 fetchMessages { messages in
                     print(messages)

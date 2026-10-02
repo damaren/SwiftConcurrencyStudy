@@ -20,7 +20,7 @@ struct AsyncPropertiesAndAsyncLetView: View {
     }
     
     var body: some View {
-        VStack {
+        List {
             Text(optionalString == nil ? "Haven't accessed the async var yet" : optionalString!)
             
             Button("Access async var") {
@@ -50,14 +50,17 @@ struct AsyncPropertiesAndAsyncLetView: View {
     }
     
     private func someAsyncWork() async -> String {
-        return "Hello there"
+        let randomInt = Int.random(in: 0...100)
+        return "Hello there \(randomInt)"
     }
     
     private func indepentendAsyncFuncOne() async -> String {
-        return "Independent value one"
+        let randomInt = Int.random(in: 0...100)
+        return "Independent value one \(randomInt)"
     }
     
     private func indepentendAsyncFuncTwo() async -> String {
-        return "Independent value two"
+        let randomInt = Int.random(in: 0...100)
+        return "Independent value two \(randomInt)"
     }
 }

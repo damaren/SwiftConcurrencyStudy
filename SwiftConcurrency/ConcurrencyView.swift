@@ -11,17 +11,17 @@ struct ConcurrencyView: View {
     @State private var executionResult = [String]()
     
     var body: some View {
-        VStack {
-            List(executionResult, id: \.self) { result in
-                Text(result)
-            }
-            
+        List {
             Button("Single task") {
                 singleTaskFunc()
             }
             
             Button("Multiple task") {
                 multipleTaskFunc()
+            }
+            
+            ForEach(executionResult, id: \.self) { result in
+                Text(result)
             }
         }
         .navigationTitle("Concurrency")

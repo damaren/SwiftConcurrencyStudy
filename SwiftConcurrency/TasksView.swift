@@ -9,7 +9,7 @@ import SwiftUI
 
 struct TasksView: View {
     var body: some View {
-        VStack {
+        List {
             Button("Non returning task example") {
                 Task {
                     print("This task doesn't return anything")
