@@ -21,6 +21,12 @@ struct TasksView: View {
                     await returningTaskExample()
                 }
             }
+            
+            Button("Task with explicit return value example") {
+                Task {
+                    await explicitReturnTypeExample()
+                }
+            }
         }
         .navigationTitle("Tasks")
     }
@@ -28,6 +34,15 @@ struct TasksView: View {
     private func returningTaskExample() async {
         let task = Task {
             return("This task returns a string")
+        }
+        
+        let result = await task.value
+        print(result)
+    }
+    
+    private func explicitReturnTypeExample() async {
+        let task = Task<String, Never> {
+            return("This is the return value of a task with an explicit return type (String)")
         }
         
         let result = await task.value
