@@ -27,6 +27,12 @@ struct TasksView: View {
                     await explicitReturnTypeExample()
                 }
             }
+            
+            Button("Detached vs non detached example") {
+                Task {
+                    await detachedVsNonDetachedExample()
+                }
+            }
         }
         .navigationTitle("Tasks")
     }
@@ -47,5 +53,33 @@ struct TasksView: View {
         
         let result = await task.value
         print(result)
+    }
+    
+    private func detachedVsNonDetachedExample() async {
+        Task {
+            for i in 0...20 {
+                print("Task 1: \(i)")
+            }
+        }
+        
+        Task {
+            for i in 0...20 {
+                print("Task 2: \(i)")
+            }
+        }
+        
+        try? await Task.sleep(for: .seconds(1))
+        
+        Task.detached {
+            for i in 0...20 {
+                print("Task detached 1: \(i)")
+            }
+        }
+        
+        Task.detached {
+            for i in 0...20 {
+                print("Task detached 2: \(i)")
+            }
+        }
     }
 }
