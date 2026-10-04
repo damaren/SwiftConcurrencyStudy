@@ -33,6 +33,12 @@ struct TasksView: View {
                     await detachedVsNonDetachedExample()
                 }
             }
+            
+            Button("Make a task sleep example") {
+                Task {
+                    await makeTasksSleepExample()
+                }
+            }
         }
         .navigationTitle("Tasks")
     }
@@ -81,5 +87,26 @@ struct TasksView: View {
                 print("Task detached 2: \(i)")
             }
         }
+    }
+    
+    private func makeTasksSleepExample() async {
+        Task {
+            print("First task started")
+            try? await Task.sleep(for: .seconds(1))
+            print("First task ended")
+        }
+        
+        let secondTask = Task {
+            print("Second task started")
+            do {
+                try await Task.sleep(for: .seconds(1))
+            } catch {
+                print("Second task was cancelled mid sleep")
+                return
+            }
+            print("Second task ended")
+        }
+        
+        secondTask.cancel()
     }
 }
