@@ -39,6 +39,12 @@ struct TasksView: View {
                     await makeTasksSleepExample()
                 }
             }
+            
+            Button("Get a Swift.Result from a task") {
+                Task {
+                    await getSwiftResultFromTask()
+                }
+            }
         }
         .navigationTitle("Tasks")
     }
@@ -108,5 +114,29 @@ struct TasksView: View {
         }
         
         secondTask.cancel()
+    }
+    
+    private func getSwiftResultFromTask() async {
+        let task1 = Task {
+            return "Task 1 return value"
+        }
+        
+        let task1Result = await task1.result
+        
+        let taskOneValue = task1Result.get()
+        
+        print(taskOneValue)
+        
+        let throwingTask = Task {
+            throw(NSError(domain: "Any error", code: 1))
+        }
+        
+        let throwingTaskResult = await throwingTask.result
+        
+        do {
+            try throwingTaskResult.get()
+        } catch {
+            print("Throwing task threw an error")
+        }
     }
 }
