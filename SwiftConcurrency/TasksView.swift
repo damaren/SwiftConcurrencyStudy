@@ -45,6 +45,12 @@ struct TasksView: View {
                     await getSwiftResultFromTask()
                 }
             }
+            
+            Button("Task priority example") {
+                Task {
+                    await taskPriorityExample()
+                }
+            }
         }
         .navigationTitle("Tasks")
     }
@@ -139,4 +145,38 @@ struct TasksView: View {
             print("Throwing task threw an error")
         }
     }
+    
+    private func taskPriorityExample() async {
+        Task {
+            for i in 1...50 {
+                print("Task 1 - \(i)")
+                
+            }
+        }
+        
+        Task {
+            for i in 1...50 {
+                print("Task 2 - \(i)")
+                
+            }
+        }
+        
+        try? await Task.sleep(for: .seconds(1))
+        
+
+        Task(priority: .low) {
+            for i in 1...50 {
+                print("Task 3 - \(i)")
+                
+            }
+        }
+        
+        Task(priority: .high) {
+            for i in 1...50 {
+                print("Task 4 - \(i)")
+                
+            }
+        }
+    }
+    
 }
