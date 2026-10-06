@@ -117,15 +117,15 @@ struct TasksView: View {
     }
     
     private func getSwiftResultFromTask() async {
-        let task1 = Task {
-            return "Task 1 return value"
+        let nonThrowingTask = Task {
+            return "nonThrowingTask return value"
         }
         
-        let task1Result = await task1.result
+        let nonThrowingTaskResult = await nonThrowingTask.result
         
-        let taskOneValue = task1Result.get()
+        let nonThrowingTaskValue = nonThrowingTaskResult.get()
         
-        print(taskOneValue)
+        print(nonThrowingTaskValue)
         
         let throwingTask = Task {
             throw(NSError(domain: "Any error", code: 1))
