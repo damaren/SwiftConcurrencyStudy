@@ -51,6 +51,12 @@ struct TasksView: View {
                     await taskPriorityExample()
                 }
             }
+            
+            Button("Task priority escalation example") {
+                Task {
+                    await priorityEscalationExample()
+                }
+            }
         }
         .navigationTitle("Tasks")
     }
@@ -177,6 +183,23 @@ struct TasksView: View {
                 
             }
         }
+    }
+    
+    private func priorityEscalationExample() async {
+        let outerTask = Task(priority: .high) {
+            let innerTask = Task(priority: .low) {
+                print("Inner: \(Task.currentPriority)")
+                
+                try? await Task.sleep(for: .seconds(1))
+                
+                print("Inner: \(Task.currentPriority)")
+            }
+            
+            try? await Task.sleep(for: .seconds(0.5))
+            await innerTask.value
+        }
+        
+        await outerTask.value
     }
     
 }
