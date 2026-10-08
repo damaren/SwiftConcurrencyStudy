@@ -57,6 +57,12 @@ struct TasksView: View {
                     await priorityEscalationExample()
                 }
             }
+            
+            Button("Cancel a task") {
+                Task {
+                    await cancelATask()
+                }
+            }
         }
         .navigationTitle("Tasks")
     }
@@ -200,6 +206,56 @@ struct TasksView: View {
         }
         
         await outerTask.value
+    }
+    
+    private func cancelATask() async {
+        let task1 = Task {
+            print("Task 1 started")
+            try? await Task.sleep(for: .seconds(1))
+            print("Task 1 finished")
+        }
+        
+        task1.cancel()
+        
+        let task2 = Task {
+            print("Task 2 started")
+            try? await Task.sleep(for: .seconds(1))
+            if Task.isCancelled {
+                print("Task 2 was cancelled.")
+                return
+            }
+            print("Task 2 finished")
+        }
+        
+        task2.cancel()
+        
+        let task3 = Task {
+            print("Task 3 started")
+            
+            do {
+                try Task.checkCancellation()
+            } catch {
+                print("Task 3 was cancelled.")
+                return
+            }
+            
+            print("Task 3 finished")
+        }
+        
+        task3.cancel()
+        
+        let task4 = Task {
+            print("Task 4 started")
+            do {
+                try await Task.sleep(for: .seconds(1))
+            } catch {
+                print("Task 4 was cancelled mid sleep")
+                return
+            }
+            print("Task 4 finished")
+        }
+        
+        task4.cancel()
     }
     
 }
