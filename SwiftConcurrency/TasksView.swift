@@ -63,6 +63,12 @@ struct TasksView: View {
                     await cancelATask()
                 }
             }
+            
+            Button("Voluntarily suspend task") {
+                Task {
+                    await voluntarilySuspendWithYield()
+                }
+            }
         }
         .navigationTitle("Tasks")
     }
@@ -258,4 +264,34 @@ struct TasksView: View {
         task4.cancel()
     }
     
+    private func voluntarilySuspendWithYield() async {
+        var isTaskTwoFinished = false
+        
+        Task {
+            print("Task 1 started")
+            for i in 0...100_000 {
+                for j in 0...1_000 {
+                    if (i*j).isMultiple(of: 1_000) {
+                        if !isTaskTwoFinished {
+                            print("Task 1 - before yield")
+                            await Task.yield()
+                            print("Task 1 - after yield")
+                        }
+                    }
+                }
+            }
+            print("Task 1 finished")
+        }
+        
+        Task {
+            print("Task 2 started")
+            
+            for i in 0...100 {
+                print(i)
+            }
+            
+            print("Task 2 finished")
+            isTaskTwoFinished = true
+        }
+    }
 }
