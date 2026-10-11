@@ -69,6 +69,12 @@ struct TasksView: View {
                     await voluntarilySuspendWithYield()
                 }
             }
+            
+            Button("Task group") {
+                Task {
+                    await taskGroupExample()
+                }
+            }
         }
         .navigationTitle("Tasks")
     }
@@ -293,5 +299,25 @@ struct TasksView: View {
             print("Task 2 finished")
             isTaskTwoFinished = true
         }
+    }
+    
+    private func taskGroupExample() async {
+        let ints = await withTaskGroup(of: Int.self) { group in
+            group.addTask { 1 }
+            group.addTask { 2 }
+            group.addTask { 3 }
+            group.addTask { 4 }
+            group.addTask { 5 }
+            
+            var result = [Int]()
+            
+            for await value in group {
+                result.append(value)
+            }
+            
+            return result
+        }
+        
+        print(ints)
     }
 }
