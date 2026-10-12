@@ -75,6 +75,12 @@ struct TasksView: View {
                     await taskGroupExample()
                 }
             }
+            
+            Button("Throwing task group") {
+                Task {
+                    await throwingTaskGroupExample()
+                }
+            }
         }
         .navigationTitle("Tasks")
     }
@@ -319,5 +325,15 @@ struct TasksView: View {
         }
         
         print(ints)
+    }
+    
+    private func throwingTaskGroupExample() async {
+        do {
+            let _ = try await withThrowingTaskGroup(of: Int.self) { group in
+                throw NSError(domain: "Any Error", code: 1)
+            }
+        } catch {
+            print("The task group threw an error")
+        }
     }
 }
