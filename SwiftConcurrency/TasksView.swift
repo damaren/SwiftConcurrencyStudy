@@ -81,6 +81,12 @@ struct TasksView: View {
                     await throwingTaskGroupExample()
                 }
             }
+            
+            Button("Cancel task group") {
+                Task {
+                    await cancelTaskGroup()
+                }
+            }
         }
         .navigationTitle("Tasks")
     }
@@ -335,5 +341,63 @@ struct TasksView: View {
         } catch {
             print("The task group threw an error")
         }
+    }
+    
+    private func cancelTaskGroup() async {
+        let task = Task {
+            let result = await withTaskGroup { group in
+                group.addTask {
+                    if Task.isCancelled {
+                        return 0
+                    } else {
+                        return 1
+                    }
+                }
+                group.addTask {
+                    if Task.isCancelled {
+                        return 0
+                    } else {
+                        return 2
+                    }
+                }
+                group.addTask {
+                    if Task.isCancelled {
+                        return 0
+                    } else {
+                        return 3
+                    }
+                }
+                group.addTask {
+                    if Task.isCancelled {
+                        return 0
+                    } else {
+                        return 4
+                    }
+                }
+                group.addTask {
+                    if Task.isCancelled {
+                        return 0
+                    } else {
+                        return 5
+                    }
+                }
+                
+                var result = [Int]()
+                
+                for await value in group {
+                    result.append(value)
+                }
+                
+                return result
+            }
+            
+            return result
+        }
+        
+        task.cancel()
+        
+        let result = await task.value
+        
+        print(result)
     }
 }
