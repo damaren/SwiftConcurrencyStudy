@@ -87,6 +87,12 @@ struct TasksView: View {
                     await cancelTaskGroup()
                 }
             }
+            
+            Button("Task group cancel all") {
+                Task {
+                    await taskGroupCancellAll()
+                }
+            }
         }
         .navigationTitle("Tasks")
     }
@@ -397,6 +403,58 @@ struct TasksView: View {
         task.cancel()
         
         let result = await task.value
+        
+        print(result)
+    }
+    
+    private func taskGroupCancellAll() async {
+        let result = await withTaskGroup { group in
+            group.addTask {
+                if Task.isCancelled {
+                    return -1
+                } else {
+                    return 1
+                }
+            }
+            group.addTask {
+                if Task.isCancelled {
+                    return -1
+                } else {
+                    return 2
+                }
+            }
+            group.addTask {
+                if Task.isCancelled {
+                    return -1
+                } else {
+                    return 3
+                }
+            }
+            group.addTask {
+                if Task.isCancelled {
+                    return -1
+                } else {
+                    return 4
+                }
+            }
+            group.addTask {
+                if Task.isCancelled {
+                    return -1
+                } else {
+                    return 5
+                }
+            }
+            
+            group.cancelAll()
+            
+            var result = [Int]()
+            
+            for await value in group {
+                result.append(value)
+            }
+            
+            return result
+        }
         
         print(result)
     }
