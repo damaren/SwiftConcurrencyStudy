@@ -93,6 +93,12 @@ struct TasksView: View {
                     await taskGroupCancellAll()
                 }
             }
+            
+            Button("Task group cancel by task throwing") {
+                Task {
+                    await taskGroupCancelByTaskThrowing()
+                }
+            }
         }
         .navigationTitle("Tasks")
     }
@@ -457,5 +463,63 @@ struct TasksView: View {
         }
         
         print(result)
+    }
+    
+    private func taskGroupCancelByTaskThrowing() async {
+        do {
+            let result = try await withThrowingTaskGroup(of: Int.self) { group in
+                group.addTask {
+                    throw(NSError(domain: "Any Error", code: 1))
+                }
+                group.addTask {
+                    try? await Task.sleep(for: .seconds(1))
+                    if Task.isCancelled {
+                        print("Task 2 cancelled")
+                        return -2
+                    } else {
+                        return 2
+                    }
+                }
+                group.addTask {
+                    try? await Task.sleep(for: .seconds(1))
+                    if Task.isCancelled {
+                        print("Task 3 cancelled")
+                        return -2
+                    } else {
+                        return 3
+                    }
+                }
+                group.addTask {
+                    try? await Task.sleep(for: .seconds(1))
+                    if Task.isCancelled {
+                        print("Task 4 cancelled")
+                        return -2
+                    } else {
+                        return 4
+                    }
+                }
+                group.addTask {
+                    try? await Task.sleep(for: .seconds(1))
+                    if Task.isCancelled {
+                        print("Task 5 cancelled")
+                        return -2
+                    } else {
+                        return 5
+                    }
+                }
+                
+                var result = [Int]()
+                
+                for try await value in group {
+                    result.append(value)
+                }
+                
+                return result
+            }
+            
+            print(result)
+        } catch {
+            print("An error was thrown")
+        }
     }
 }
