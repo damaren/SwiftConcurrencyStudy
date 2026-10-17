@@ -105,6 +105,12 @@ struct TasksView: View {
                     await groupWithDifferentResultTypes()
                 }
             }
+            
+            Button("Discarding group") {
+                Task {
+                    await discardingGroup()
+                }
+            }
         }
         .navigationTitle("Tasks")
     }
@@ -561,5 +567,35 @@ struct TasksView: View {
         
         print("Int value: \(result.0)")
         print("String value: \(result.1)")
+    }
+    
+    private func discardingGroup() async {
+        await withTaskGroup { group in
+            group.addTask {
+                print("Task group 1 started")
+                
+                print("Task group 1 finished")
+            }
+            
+            print("Group 1 is empty: \(group.isEmpty)")
+            
+            try? await Task.sleep(for: .seconds(1))
+            
+            let _ = await group.next()
+            
+            print("Group 1 is empty: \(group.isEmpty)")
+        }
+        
+        await withDiscardingTaskGroup { group in
+            group.addTask {
+                print("Task group 2 started")
+                
+                print("Task group 2 finished")
+            }
+            
+            try? await Task.sleep(for: .seconds(1))
+            
+            print("Group 2 is empty: \(group.isEmpty)")
+        }
     }
 }
