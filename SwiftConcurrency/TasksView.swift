@@ -99,6 +99,12 @@ struct TasksView: View {
                     await taskGroupCancelByTaskThrowing()
                 }
             }
+            
+            Button("Group with different return types") {
+                Task {
+                    await groupWithDifferentResultTypes()
+                }
+            }
         }
         .navigationTitle("Tasks")
     }
@@ -521,5 +527,39 @@ struct TasksView: View {
         } catch {
             print("An error was thrown")
         }
+    }
+    
+    private func groupWithDifferentResultTypes() async {
+        enum ResultType {
+            case resultA(Int)
+            case resultB(String)
+        }
+        
+        let result = await withTaskGroup(of: ResultType.self) { group in
+            group.addTask {
+                return .resultA(0)
+            }
+            
+            group.addTask {
+                return .resultB("Return value of task 2")
+            }
+            
+            var intValue = 0
+            var stringValue = ""
+            
+            for await value in group {
+                switch value {
+                case .resultA(let i):
+                    intValue = i
+                case .resultB(let s):
+                    stringValue = s
+                }
+            }
+            
+            return (intValue, stringValue)
+        }
+        
+        print("Int value: \(result.0)")
+        print("String value: \(result.1)")
     }
 }
