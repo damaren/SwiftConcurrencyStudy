@@ -113,6 +113,9 @@ struct TasksView: View {
             }
         }
         .navigationTitle("Tasks")
+        .task {
+            print("This task executes as soon as the view appears")
+        }
     }
     
     private func returningTaskExample() async {
