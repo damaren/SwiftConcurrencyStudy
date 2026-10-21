@@ -16,6 +16,7 @@ enum MyPath: Hashable {
     case asyncSequences
     case asyncStreams
     case tasks
+    case actors
 }
 
 struct TableOfContentsView: View {
@@ -55,6 +56,10 @@ struct TableOfContentsView: View {
                 Button("Tasks") {
                     path.append(MyPath.tasks)
                 }
+                
+                Button("Actors") {
+                    path.append(MyPath.actors)
+                }
             }
             .navigationDestination(for: MyPath.self) { route in
                 switch route {
@@ -74,6 +79,8 @@ struct TableOfContentsView: View {
                     AsyncStreamView()
                 case .tasks:
                     TasksView()
+                case .actors:
+                    ActorView()
                 }
             }
             .navigationTitle("Table of contents")
