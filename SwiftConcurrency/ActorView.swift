@@ -13,6 +13,10 @@ struct ActorView: View {
             Button("Create and access actor") {
                 createAndAccessActor()
             }
+            
+            Button("Isolated func param") {
+                isolatedFuncParam()
+            }
         }
         .navigationTitle("Actors")
     }
@@ -35,6 +39,23 @@ struct ActorView: View {
         Task {
             let value = await myActor.myInt
             print("myInt: \(value)")
+        }
+    }
+    
+    private func isolatedFuncParam() {
+        actor MyActor {
+            var name = "name"
+            var list = [Int]()
+        }
+        
+        func myFunc(myActor: isolated MyActor) {
+            print(myActor.name)
+            print(myActor.list)
+        }
+        
+        Task {
+            let myActor = MyActor()
+            await myFunc(myActor: myActor)
         }
     }
 }
