@@ -17,6 +17,10 @@ struct ActorView: View {
             Button("Isolated func param") {
                 isolatedFuncParam()
             }
+            
+            Button("Nonisolated func") {
+                nonIsolated()
+            }
         }
         .navigationTitle("Actors")
     }
@@ -56,6 +60,29 @@ struct ActorView: View {
         Task {
             let myActor = MyActor()
             await myFunc(myActor: myActor)
+        }
+    }
+    
+    private func nonIsolated() {
+        actor MyActor {
+            var name = "name"
+            let id = 1
+            
+            nonisolated func printName() async {
+                print("My name is \(await name)")
+            }
+            
+            nonisolated func printID() {
+                print("My id is \(id)")
+            }
+        }
+        
+        let myActor = MyActor()
+        
+        myActor.printID()
+        
+        Task {
+            await myActor.printName()
         }
     }
 }
