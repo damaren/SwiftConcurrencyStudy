@@ -21,6 +21,10 @@ struct ActorView: View {
             Button("Nonisolated func") {
                 nonIsolated()
             }
+            
+            Button("Main actor") {
+                mainActor()
+            }
         }
         .navigationTitle("Actors")
     }
@@ -84,5 +88,24 @@ struct ActorView: View {
         Task {
             await myActor.printName()
         }
+    }
+    
+    nonisolated private func mainActor() {
+        Task {
+            await MainActor.run {
+                print("On the main actor")
+            }
+        }
+        
+        @MainActor
+        func mainActorFunc() {
+            print("This can only execute on the main actor")
+        }
+        
+        Task {
+            await mainActorFunc()
+        }
+        
+        print("This is called from a non isolated context")
     }
 }
