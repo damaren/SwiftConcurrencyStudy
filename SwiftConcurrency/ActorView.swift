@@ -25,6 +25,10 @@ struct ActorView: View {
             Button("Main actor") {
                 mainActor()
             }
+            
+            Button("Actor Hopping") {
+                actorHopping()
+            }
         }
         .navigationTitle("Actors")
     }
@@ -107,5 +111,31 @@ struct ActorView: View {
         }
         
         print("This is called from a non isolated context")
+    }
+    
+    private func actorHopping() {
+        func printThreadInfo() {
+            print("Main: \(Thread.isMainThread). Thread: \(Thread.current)")
+        }
+        
+        actor NotTheMainActor {
+            func doWork(_ i: Int) {
+                print("Main: \(Thread.isMainThread). Thread: \(Thread.current). Doing work: \(i)")
+            }
+        }
+        
+        let localActor = NotTheMainActor()
+        
+        @MainActor // not really necessary because we inherit the MainActor context from the SwiftUI view, but still useful for educational purposes
+        func doIterativeWork() {
+            Task {
+                for i in 1...100 {
+                    printThreadInfo()
+                    await localActor.doWork(i)
+                }
+            }
+        }
+        
+        doIterativeWork()
     }
 }
