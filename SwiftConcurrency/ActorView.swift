@@ -29,6 +29,10 @@ struct ActorView: View {
             Button("Actor Hopping") {
                 actorHopping()
             }
+            
+            Button("Actor reentrancy") {
+                actorReentrancy()
+            }
         }
         .navigationTitle("Actors")
     }
@@ -137,5 +141,27 @@ struct ActorView: View {
         }
         
         doIterativeWork()
+    }
+    
+    private func actorReentrancy() {
+        actor MyActor {
+            var score: Int = 0
+            
+            func increaseScore() {
+                Task {
+                    score += 1
+                    try? await Task.sleep(for: .seconds(1))
+                    print("Score: \(score)")
+                }
+            }
+        }
+        
+        let actor = MyActor()
+        
+        Task {
+            await actor.increaseScore()
+            await actor.increaseScore()
+            await actor.increaseScore()
+        }
     }
 }
